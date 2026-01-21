@@ -84,6 +84,9 @@ struct FooSpec {
     x_kubernetes_set: Vec<String>,
 
     optional_enum: Option<Gender>,
+
+    /// Preferred gender
+    optional_enum_with_doc: Option<Gender>,
 }
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize, JsonSchema)]
@@ -195,6 +198,7 @@ fn test_serialized_matches_expected() {
             set: HashSet::from(["foo".to_owned()]),
             x_kubernetes_set: vec![],
             optional_enum: Some(Gender::Other),
+            optional_enum_with_doc: Some(Gender::Other),
         }))
         .unwrap(),
         serde_json::json!({
@@ -231,6 +235,7 @@ fn test_serialized_matches_expected() {
                 "set": ["foo"],
                 "xKubernetesSet": [],
                 "optionalEnum": "Other",
+                "optionalEnumWithDoc": "Other",
             }
         })
     )
@@ -424,6 +429,16 @@ fn test_crd_schema_matches_expected() {
                                                 "x-kubernetes-list-type": "set",
                                             },
                                             "optionalEnum": {
+                                                "nullable": true,
+                                                "type": "string",
+                                                "enum": [
+                                                    "Female",
+                                                    "Male",
+                                                    "Other"
+                                                ],
+                                            },
+                                            "optionalEnumWithDoc": {
+                                                "description": "Preferred gender",
                                                 "nullable": true,
                                                 "type": "string",
                                                 "enum": [
